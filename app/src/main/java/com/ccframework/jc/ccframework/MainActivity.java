@@ -1,5 +1,11 @@
 package com.ccframework.jc.ccframework;
 
+import com.ccframework.facebook.activities.FacebookActivity;
+import com.facebook.AppEventsLogger;
+import com.facebook.Session;
+
+import android.content.Intent;
+import android.hardware.Camera;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,18 +13,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.Toast;
-
 import com.ccframework.floatingbutton.FloatingActionButton;
 import com.ccframework.floatingbutton.FloatingActionsMenu;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+
+import java.util.Arrays;
 
 import static android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity {
+
+    private static final String TAG = "MainActivity";
 
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
@@ -71,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // code here will execute once the drawer is opened( As I dont want anything happened when drawer is
                 // open I am not going to put anything here)
             }
 
@@ -90,16 +100,25 @@ public class MainActivity extends ActionBarActivity {
 
 
         final View actionB = findViewById(R.id.action_b);
-
-        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
-//        actionC.setTitle("Hide/Show Action above");
-        actionC.setOnClickListener(new OnClickListener() {
+        actionB.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v) {
-                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                Intent fb_intent;
+                fb_intent = new Intent(MainActivity.this, FacebookActivity.class);
+                startActivity(fb_intent);
+
             }
         });
-        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
+
+//        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
+//        actionC.setTitle("Hide/Show Action above");
+//        actionC.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+//            }
+//        });
+//        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
 
     }
 
@@ -125,4 +144,23 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+//        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+//        AppEventsLogger.deactivateApp(this);
+    }
+
+
 }
