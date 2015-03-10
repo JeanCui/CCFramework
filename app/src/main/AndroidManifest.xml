@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ccframework.jc.ccframework" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,21 +27,32 @@
             android:label="@string/title_activity_facebook" >
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
 
-
-        <provider android:authorities="com.facebook.app.NativeAppCallContentProvider781907091898512"
+        <provider
             android:name="com.facebook.NativeAppCallContentProvider"
-            android:exported="true"/>
-        <receiver android:name="com.ccframework.facebook.activities.FacebookBroadcastReciever">
+            android:authorities="com.facebook.app.NativeAppCallContentProvider781907091898512"
+            android:exported="true" />
+
+        <receiver android:name="com.ccframework.facebook.activities.FacebookBroadcastReciever" >
             <intent-filter>
                 <action android:name="com.facebook.platform.AppCallResultBroadcast" />
             </intent-filter>
         </receiver>
 
         <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="01a16d5aebf55feabc4bbb3def23abef8828a320" />
+
+        <activity
+            android:name="com.ccframework.twitter.activities.TwitterActivity"
+            android:label="@string/title_activity_twitter" >
+        </activity>
     </application>
 
 </manifest>

@@ -71,8 +71,8 @@
             android:id="@+id/action_a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            fab:fab_icon="@drawable/ic_twitter"
             fab:fab_colorNormal="@color/white"
-
             fab:fab_colorPressed="@color/white_pressed"/>
 
         <com.ccframework.floatingbutton.FloatingActionButton
@@ -81,7 +81,6 @@
             android:layout_height="wrap_content"
             fab:fab_icon="@drawable/ic_fb"
             fab:fab_colorNormal="@color/white"
-
             fab:fab_colorPressed="@color/white_pressed"/>
 
     </com.ccframework.floatingbutton.FloatingActionsMenu>

@@ -1,6 +1,7 @@
 package com.ccframework.jc.ccframework;
 
 import com.ccframework.facebook.activities.FacebookActivity;
+import com.ccframework.twitter.activities.TwitterActivity;
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 
@@ -22,11 +23,20 @@ import com.ccframework.floatingbutton.FloatingActionsMenu;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
+import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 
 import static android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "as4qY871B3ERmyeUJdZFOO8PH";
+    private static final String TWITTER_SECRET = "zGU6KhwVw777yBDPlQ6S79WLXAwYrao5szZ4gTmUQDIwmdFa2r";
 
     private static final String TAG = "MainActivity";
 
@@ -110,6 +120,17 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        final View actionA = findViewById(R.id.action_a);
+        actionA.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent tw_intent;
+                tw_intent = new Intent(MainActivity.this, TwitterActivity.class);
+                startActivity(tw_intent);
+
+            }
+        });
+
 //        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
 //        actionC.setTitle("Hide/Show Action above");
 //        actionC.setOnClickListener(new OnClickListener() {
@@ -119,6 +140,10 @@ public class MainActivity extends ActionBarActivity {
 //            }
 //        });
 //        ((FloatingActionsMenu) findViewById(R.id.multiple_actions)).addButton(actionC);
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+        Fabric.with(this, new TweetComposer());
 
     }
 
