@@ -27,6 +27,14 @@
             android:label="@string/title_activity_facebook" >
         </activity>
 
+
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" >
+        </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
@@ -43,7 +51,9 @@
         </receiver>
 
         <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
         <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -52,6 +62,14 @@
         <activity
             android:name="com.ccframework.twitter.activities.TwitterActivity"
             android:label="@string/title_activity_twitter" >
+        </activity>
+        <activity
+            android:name="com.ccframework.weibo.activities.WBAuthActivity"
+            android:label="@string/title_activity_wbauth" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

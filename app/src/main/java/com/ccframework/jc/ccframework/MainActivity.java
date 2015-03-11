@@ -1,34 +1,26 @@
 package com.ccframework.jc.ccframework;
 
-import com.ccframework.facebook.activities.FacebookActivity;
-import com.ccframework.twitter.activities.TwitterActivity;
-import com.facebook.AppEventsLogger;
-import com.facebook.Session;
-
+import com.ccframework.weibo.activities.WBAuthActivity;
+import com.sina.weibo.sdk.auth.*;
 import android.content.Intent;
-import android.hardware.Camera;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.ccframework.floatingbutton.FloatingActionButton;
-import com.ccframework.floatingbutton.FloatingActionsMenu;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 
+import com.ccframework.facebook.activities.FacebookActivity;
+import com.ccframework.twitter.activities.TwitterActivity;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import io.fabric.sdk.android.Fabric;
-import java.util.Arrays;
 
 import static android.view.View.OnClickListener;
 
@@ -128,6 +120,16 @@ public class MainActivity extends ActionBarActivity {
                 tw_intent = new Intent(MainActivity.this, TwitterActivity.class);
                 startActivity(tw_intent);
 
+            }
+        });
+
+        final View actionC = findViewById(R.id.action_c);
+        actionC.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent wb_intent;
+                wb_intent = new Intent(MainActivity.this, WBAuthActivity.class);
+                startActivity(wb_intent);
             }
         });
 
