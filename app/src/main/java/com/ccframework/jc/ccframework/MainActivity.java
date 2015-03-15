@@ -227,16 +227,8 @@ public class MainActivity extends ActionBarActivity {
                 Uri selectedImageUri = data.getData();
                 // NEED MORE TEST HERE
                 mImagePath = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
-//                String imagePath = getRealPathFromURI(selectedImageUri);
-//                String im1 = new File(imagePath).getAbsolutePath();
-
                 PICK_IMAGE_FINISH = true;
 
-//                try {
-//                    drawPanel.drawImage(imagePath);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             }
         }
     }

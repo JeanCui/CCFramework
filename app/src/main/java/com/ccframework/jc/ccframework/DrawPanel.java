@@ -8,21 +8,15 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 
 public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 	
@@ -56,92 +50,15 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
         mainContext = context;
 		getHolder().addCallback(this);
-//		pen.setColor(Color.GREEN);
-//		pen.setTextSize(30);
-//		pen.setStyle(Style.STROKE);
 		setOnTouchListener(this);
 
         scaleRectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
         scaleRectPaint.setStyle(Style.FILL);
 
+        // Experimental code
         rectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
         rectPaint.setStyle(Style.STROKE);
         rectPaint.setStrokeWidth(5);
-
-//        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.nnn);
-//
-//        options = new BitmapFactory.Options();
-//        options.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.nnn, options);
-//
-//
-//        origWidth = options.outWidth;
-//        origHeight = options.outHeight;
-//
-//
-//        int viewWidth = getWidth();
-//        int viewHeight = getHeight();
-//
-//        if(origHeight > viewHeight)
-//        {
-//            float desiredScale = (float) viewHeight / origHeight;
-//
-//            // Decode with inSampleSize
-//            options.inJustDecodeBounds = false;
-//            options.inDither = false;
-//            options.inSampleSize = 1;
-//            options.inScaled = false;
-//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//            BitmapFactory.decodeResource(getResources(), R.drawable.nnn, options);
-//
-//            // Resize
-//            Matrix matrix = new Matrix();
-//            matrix.postScale(desiredScale, desiredScale);
-//            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-//
-//
-//        }
-//        if(origWidth > viewWidth)
-//        {
-//
-//            float desiredScale = (float) viewWidth / origWidth;
-//
-//            // Decode with inSampleSize
-//            options.inJustDecodeBounds = false;
-//            options.inDither = false;
-//            options.inSampleSize = 1;
-//            options.inScaled = false;
-//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//            BitmapFactory.decodeResource(getResources(), R.drawable.nnn, options);
-//
-//            // Resize
-//            Matrix matrix = new Matrix();
-//            matrix.postScale(desiredScale, desiredScale);
-//            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-//        }
-//
-//
-//
-//
-//
-////        origWidth = bitmap.getWidth();
-////        origHeight = bitmap.getHeight();
-//
-//        aspectRatio = origWidth/(float)origHeight;
-//
-//        scaleRectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
-//        scaleRectPaint.setStyle(Style.FILL);
-//
-//        scaleRectVerLeft = origWidth + leftMargin + scaleRectMargin;
-//        scaleRectVerRight = scaleRectVerLeft + scaleRectWidth;
-//        scaleRectVerTop = origHeight + topMargin - (scaleRectHeight - scaleRectWidth - scaleRectMargin);
-//        scaleRectVerBottom = scaleRectVerTop + scaleRectHeight;
-//
-//        scaleRectHorLeft = origWidth + leftMargin - (scaleRectHeight - scaleRectWidth - scaleRectMargin);
-//        scaleRectHorRight = scaleRectHorLeft + scaleRectHeight;
-//        scaleRectHorTop = origHeight + topMargin + scaleRectMargin;
-//        scaleRectHorBottom = scaleRectHorTop + scaleRectWidth;
-
 	}
 	public void drawCanvas()
     {
@@ -152,20 +69,17 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 	public void draw(){
 		canvas = getHolder().lockCanvas();
 
-//        Bitmap.createScaledBitmap(bitmap, )
 		canvas.drawColor(Color.GRAY);
-//		canvas.drawPath(path, pen);
         canvas.drawBitmap(scaledBitmap, leftMargin, topMargin,null);
         canvas.drawRect(scaleRectVerLeft, scaleRectVerTop, scaleRectVerRight, scaleRectVerBottom, scaleRectPaint);
         canvas.drawRect(scaleRectHorLeft, scaleRectHorTop, scaleRectHorRight, scaleRectHorBottom, scaleRectPaint);
 
-//        canvas.drawRect(20, 20, 100,100,rectPaint);
 		getHolder().unlockCanvasAndPost(canvas);
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
+
         drawCanvas();
         if(MainActivity.PICK_IMAGE_FINISH)
         {
@@ -234,14 +148,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 //        options.inSampleSize = 2;
         bitmap = BitmapFactory.decodeFile(imgPath, options);
 
-
-//        options.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.testimg, options);
-
-
-//        origWidth = options.outWidth;
-//        origHeight = options.outHeight;
-
         origWidth = bitmap.getWidth();
         origHeight = bitmap.getHeight();
 
@@ -254,19 +160,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
             float desiredScale = (float) (viewHeight-50) / origHeight;
             scaledHeight =(int) (desiredScale*origHeight);
             scaledWidth = (int)(desiredScale*origWidth);
-
-            // Decode with inSampleSize
-//            options.inJustDecodeBounds = false;
-//            options.inDither = false;
-//            options.inSampleSize = 1;
-//            options.inScaled = false;
-//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//            BitmapFactory.decodeResource(getResources(), imgId, options);
-//
-//            // Resize
-//            Matrix matrix = new Matrix();
-//            matrix.postScale(desiredScale, desiredScale);
-//            scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
             bitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
 
@@ -284,27 +177,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
             origWidth = bitmap.getWidth();
             origHeight = bitmap.getHeight();
-
-            // Decode with inSampleSize
-//            options.inJustDecodeBounds = false;
-//            options.inDither = false;
-//            options.inSampleSize = 1;
-//            options.inScaled = false;
-//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//            BitmapFactory.decodeResource(getResources(), imgId, options);
-//
-//            // Resize
-//            Matrix matrix = new Matrix();
-//            matrix.postScale(desiredScale, desiredScale);
-//            scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         }
-
-
-
-
-
-
-
 
         aspectRatio = origWidth/(float)origHeight;
 
@@ -332,10 +205,9 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
     {
         return scaleRectHorBottom;
     }
+
     private boolean scaleImage(float x, float y)
     {
-
-
         float newX = y * aspectRatio;
         scaledWidth = (int)newX;
         scaledHeight = (int)y;
@@ -350,21 +222,15 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         options.inScaled = true;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         BitmapFactory.decodeFile(imgPath, options);
-//        BitmapFactory.decodeFile(imgUri, options);
 
         float desiredScale = (float)scaledWidth/bitmap.getWidth();
-//
+
         Matrix matrix = new Matrix();
         matrix.postScale(desiredScale, desiredScale);
         scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 
         return true;
-//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
-//        bitmap.recycle();
-//        bitmap = scaledBitmap;
-
-
 
     }
 	@Override
@@ -382,15 +248,12 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                     if(scaleImage(event.getX(), event.getY()))
                         draw();
                 }
-
     //			path.lineTo(event.getX(), event.getY());
-
                 break;
             case MotionEvent.ACTION_UP:
                 if(pressScaleRect)
                 {
 //                    Toast.makeText(mainContext, "Touched and Move ScaleRect", Toast.LENGTH_SHORT).show();
-
                     pressScaleRect = false;
                 }
                 break;
