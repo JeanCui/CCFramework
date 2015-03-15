@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,9 +24,7 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
-import com.sina.weibo.sdk.net.AsyncWeiboRunner;
 import com.sina.weibo.sdk.net.RequestListener;
-import com.sina.weibo.sdk.net.WeiboParameters;
 
 import java.text.SimpleDateFormat;
 

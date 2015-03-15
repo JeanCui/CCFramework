@@ -50,10 +50,7 @@
             </intent-filter>
         </receiver>
 
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -72,5 +69,12 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

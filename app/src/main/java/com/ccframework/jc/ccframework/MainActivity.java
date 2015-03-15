@@ -1,9 +1,12 @@
 package com.ccframework.jc.ccframework;
 
 import com.ccframework.weibo.activities.WBAuthActivity;
-import com.sina.weibo.sdk.auth.*;
+
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +23,9 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.io.File;
+import java.io.IOException;
+
 import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.OnClickListener;
@@ -30,7 +36,13 @@ public class MainActivity extends ActionBarActivity {
     private static final String TWITTER_KEY = "as4qY871B3ERmyeUJdZFOO8PH";
     private static final String TWITTER_SECRET = "zGU6KhwVw777yBDPlQ6S79WLXAwYrao5szZ4gTmUQDIwmdFa2r";
 
+    // this is the action code we use in our intent,
+    // this way we know we're looking at the response from our own action
+    private static final int SELECT_PICTURE = 1;
+
     private static final String TAG = "MainActivity";
+    public static boolean PICK_IMAGE_FINISH = false;
+    public static String mImagePath;
 
     //First We Declare Titles And Icons For Our Navigation Drawer List View
     //This Icons And Titles Are holded in an Array as you can see
@@ -45,6 +57,9 @@ public class MainActivity extends ActionBarActivity {
     String EMAIL = "cuijin92@gmail.com";
     int PROFILE = R.drawable.avatar;
 
+
+    private DrawPanel drawPanel;
+
     private Toolbar toolbar;                              // Declaring the Toolbar Object
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
@@ -58,6 +73,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        drawPanel = (DrawPanel)findViewById(R.id.draw);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar with setSupportActionBar() call
@@ -133,6 +150,20 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        final View actionD = findViewById(R.id.action_d);
+        actionD.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, SELECT_PICTURE);
+
+
+            }
+        });
+
 //        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
 //        actionC.setTitle("Hide/Show Action above");
 //        actionC.setOnClickListener(new OnClickListener() {
@@ -189,5 +220,39 @@ public class MainActivity extends ActionBarActivity {
 //        AppEventsLogger.deactivateApp(this);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+
+                Uri selectedImageUri = data.getData();
+                // NEED MORE TEST HERE
+                mImagePath = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
+//                String imagePath = getRealPathFromURI(selectedImageUri);
+//                String im1 = new File(imagePath).getAbsolutePath();
+
+                PICK_IMAGE_FINISH = true;
+
+//                try {
+//                    drawPanel.drawImage(imagePath);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
 
 }
