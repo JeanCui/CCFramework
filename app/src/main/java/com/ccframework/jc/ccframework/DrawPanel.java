@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -38,12 +39,23 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
     private int scaleRectVerLeft =0, scaleRectVerTop =0, scaleRectVerRight =0, scaleRectVerBottom =0;
     private int scaleRectHorLeft =0, scaleRectHorTop =0, scaleRectHorRight =0, scaleRectHorBottom =0;
     private int scaleRectWidth = 30, scaleRectHeight = 80;
+    private boolean pressScaleRect = false;
 
     private int viewHeight=0, viewWidth=0;
 
-    private Canvas canvas;
-    BitmapFactory.Options options;
+//    private Canvas canvas;
+    private BitmapFactory.Options options;
     private String imgPath;
+
+    private DrawPanelThread drawPanelThread = null;
+
+    public int CANVAS_STATE = DO_NOTHING;
+    // Status
+    static final int DO_NOTHING =           0;
+    static final int DRAW_CANVAS =          1;
+    static final int CLEAR_CANVAS =         2;
+    static final int LOAD_IMAGE_TO_CANVAS = 3;
+    static final int SCALE_IMAGE =          4;
 
 	public DrawPanel(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -51,6 +63,8 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         mainContext = context;
 		getHolder().addCallback(this);
 		setOnTouchListener(this);
+
+//        drawPanelThread = new DrawPanelThread(this);
 
         scaleRectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
         scaleRectPaint.setStyle(Style.FILL);
@@ -60,42 +74,67 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         rectPaint.setStyle(Style.STROKE);
         rectPaint.setStrokeWidth(5);
 	}
-	public void drawCanvas()
+	public void clearCanvas(Canvas canvas)
     {
-        canvas = getHolder().lockCanvas();
+//        canvas = getHolder().lockCanvas();
         canvas.drawColor(Color.GRAY);
-        getHolder().unlockCanvasAndPost(canvas);
+//        getHolder().unlockCanvasAndPost(canvas);
     }
-	public void draw(){
-		canvas = getHolder().lockCanvas();
+	public void draw(Canvas canvas){
+//		canvas = getHolder().lockCanvas();
 
 		canvas.drawColor(Color.GRAY);
         canvas.drawBitmap(scaledBitmap, leftMargin, topMargin,null);
         canvas.drawRect(scaleRectVerLeft, scaleRectVerTop, scaleRectVerRight, scaleRectVerBottom, scaleRectPaint);
         canvas.drawRect(scaleRectHorLeft, scaleRectHorTop, scaleRectHorRight, scaleRectHorBottom, scaleRectPaint);
 
-		getHolder().unlockCanvasAndPost(canvas);
+//		getHolder().unlockCanvasAndPost(canvas);
 	}
+
+    public boolean isBitmapNull()
+    {
+        if(bitmap == null)
+            return true;
+        return false;
+    }
+
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 
-        drawCanvas();
-        if(MainActivity.PICK_IMAGE_FINISH)
+        if(drawPanelThread==null)
         {
-            try {
-                drawImage(MainActivity.mImagePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            drawPanelThread = new DrawPanelThread(this);
+        }
+//        clearCanvas();
+        if (MainActivity.PICK_IMAGE_FINISH) {
 
+            imgPath = MainActivity.mImagePath;
+            drawPanelThread.setBackFromImagePick(true);
             MainActivity.PICK_IMAGE_FINISH = false;
+            CANVAS_STATE = LOAD_IMAGE_TO_CANVAS;
+        }else if(bitmap != null)
+        {
+            CANVAS_STATE = DRAW_CANVAS;
+        }else
+        {
+            CANVAS_STATE = CLEAR_CANVAS;
         }
 
-        if(bitmap != null)
-        {
-            draw();
-        }
+
+        drawPanelThread.setRunning(true);
+        drawPanelThread.start();
+
+//        Thread.State state = drawPanelThread.getState();
+//        if ( state== Thread.State.NEW || state == Thread.State.TERMINATED)
+//        {
+
+
+//        }
+
+
+
+
 		
 	}
 
@@ -108,11 +147,24 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
+		boolean retry = true;
+        drawPanelThread.setRunning(false);
+        while (retry){
+            try{
+                drawPanelThread.join();
+                retry = false;
+            }catch (InterruptedException e)
+            {
+                Log.e("DRAW PANEL", e.getMessage());
+            }
+        }
+
+
+        drawPanelThread = null;
 		
 	}
 
-    private boolean pressScaleRect = false;
+
 
     private boolean touchScaleRect(float x, float y)
     {
@@ -124,6 +176,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
             pressScaleRect = true;
             return true;
         }
+//        CANVAS_STATE = DRAW_CANVAS;
         return false;
     }
 
@@ -140,11 +193,11 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         scaleRectHorBottom = scaleRectHorTop + scaleRectWidth;
     }
 
-    public void drawImage(String imagePath) throws IOException {
+    public void updateImage(Canvas canvas) throws IOException {
 
         options = new BitmapFactory.Options();
 
-        imgPath = imagePath;
+
 //        options.inSampleSize = 2;
         bitmap = BitmapFactory.decodeFile(imgPath, options);
 
@@ -194,40 +247,43 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         scaleRectHorBottom = scaleRectHorTop + scaleRectWidth;
 
         scaledBitmap = bitmap;
-        draw();
+        draw(canvas);
     }
 
-    private int getScaleRectVerRight()
+    private int getFutureScaleRectVerRight(int width)
     {
-        return scaleRectVerRight;
+        return width + leftMargin + scaleRectMargin + scaleRectWidth;
     }
-    private int getScaleRectHorBottom()
+    private int getFutureScaleRectHorBottom(int height)
     {
-        return scaleRectHorBottom;
+        return height + topMargin + scaleRectMargin + scaleRectWidth;
     }
 
-    private boolean scaleImage(float x, float y)
+    public boolean scaleImage(float x, float y)
     {
         float newX = y * aspectRatio;
         scaledWidth = (int)newX;
         scaledHeight = (int)y;
 
-        moveScaleRect(scaledWidth, scaledHeight);
-        if(getScaleRectVerRight() > viewWidth || getScaleRectHorBottom() > viewHeight)
+
+        if(getFutureScaleRectVerRight(scaledWidth) > viewWidth || getFutureScaleRectHorBottom(scaledHeight) > viewHeight)
             return false;
 
-        options.inJustDecodeBounds = false;
-        options.inDither = false;
-        options.inSampleSize = 1;
-        options.inScaled = true;
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.decodeFile(imgPath, options);
+        moveScaleRect(scaledWidth, scaledHeight);
 
-        float desiredScale = (float)scaledWidth/bitmap.getWidth();
-
-        Matrix matrix = new Matrix();
-        matrix.postScale(desiredScale, desiredScale);
-        scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+//        options.inJustDecodeBounds = false;
+//        options.inDither = false;
+//        options.inSampleSize = 1;
+//        options.inScaled = true;
+//        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//        BitmapFactory.decodeFile(imgPath, options);
+//
+//        float desiredScale = (float)scaledWidth/bitmap.getWidth();
+//
+//        Matrix matrix = new Matrix();
+//        matrix.postScale(desiredScale, desiredScale);
+        scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
+//        scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 
         return true;
@@ -238,15 +294,24 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 		switch(event.getAction())
 		{
             case MotionEvent.ACTION_DOWN:
+                if(isBitmapNull())
+                    return true;
                 touchScaleRect(event.getX(), event.getY());
     //			path.moveTo(event.getX(), event.getY());
     //			draw();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(pressScaleRect)
+                if(pressScaleRect )
                 {
+
+//                    drawPanelThread.setScaleCoord(event.getX(), event.getY());
+//                    CANVAS_STATE = SCALE_IMAGE;
                     if(scaleImage(event.getX(), event.getY()))
-                        draw();
+                    {
+                        CANVAS_STATE = DRAW_CANVAS;
+
+//                        draw();
+                    }
                 }
     //			path.lineTo(event.getX(), event.getY());
                 break;
@@ -255,6 +320,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                 {
 //                    Toast.makeText(mainContext, "Touched and Move ScaleRect", Toast.LENGTH_SHORT).show();
                     pressScaleRect = false;
+                    CANVAS_STATE = DO_NOTHING;
                 }
                 break;
 		}
@@ -263,7 +329,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 	
 	public void clear(){
 //		path.reset();
-		draw();
+//		draw();
 	}
 	
 
