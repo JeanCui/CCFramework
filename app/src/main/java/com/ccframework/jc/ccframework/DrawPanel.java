@@ -208,21 +208,21 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         viewWidth = getWidth();
         viewHeight = getHeight();
 
-        if(origHeight > viewHeight)
+        if(origHeight > viewHeight - scaleRectMargin - scaleRectWidth - leftMargin)
         {
-            float desiredScale = (float) (viewHeight-50) / origHeight;
+            float desiredScale = (float) (viewHeight - scaleRectMargin - scaleRectWidth - leftMargin) / origHeight;
             scaledHeight =(int) (desiredScale*origHeight);
             scaledWidth = (int)(desiredScale*origWidth);
 
             bitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
 
         }
-        if(origWidth > viewWidth)
+        if(origWidth > viewWidth - scaleRectMargin - scaleRectWidth - leftMargin)
         {
             origWidth = bitmap.getWidth();
             origHeight = bitmap.getHeight();
 
-            float desiredScale = (float) (viewWidth-50) / origWidth;
+            float desiredScale = (float) (viewWidth- scaleRectMargin - scaleRectWidth - leftMargin) / origWidth;
             scaledHeight =(int) (desiredScale*origHeight);
             scaledWidth = (int)(desiredScale*origWidth);
 
@@ -266,10 +266,11 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         scaledHeight = (int)y;
 
 
-        if(getFutureScaleRectVerRight(scaledWidth) > viewWidth || getFutureScaleRectHorBottom(scaledHeight) > viewHeight)
+        if(getFutureScaleRectVerRight(scaledWidth)+scaleRectMargin > viewWidth || getFutureScaleRectHorBottom(scaledHeight)+scaleRectMargin > viewHeight)
             return false;
 
         moveScaleRect(scaledWidth, scaledHeight);
+
 
 //        options.inJustDecodeBounds = false;
 //        options.inDither = false;
@@ -287,7 +288,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
 
         return true;
-
     }
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
