@@ -55,8 +55,8 @@ public class DrawPanelThread extends Thread {
 
                 Log.d("DRAW THREAD", Integer.toString(drawPanel.CANVAS_STATE));
                 canvas = drawPanel.getHolder().lockCanvas();
-                synchronized (drawPanel.getHolder()){
-                    switch (drawPanel.CANVAS_STATE){
+                synchronized (drawPanel.getHolder()) {
+                    switch (drawPanel.CANVAS_STATE) {
 
                         case DRAW_CANVAS:
                             drawPanel.draw(canvas);
@@ -72,33 +72,16 @@ public class DrawPanelThread extends Thread {
 //                            drawPanel.CANVAS_STATE = DO_NOTHING;
                             break;
                         case SCALE_IMAGE:
-                            if(drawPanel.scaleImage(scaledImageXCoord, scaledImageYCoord))
-                            {
+                            if (drawPanel.scaleImage(scaledImageXCoord, scaledImageYCoord)) {
                                 drawPanel.draw(canvas);
                             }
                             break;
                         default:
                             break;
-
-
                     }
                     drawPanel.CANVAS_STATE = DO_NOTHING;
-
-//                    if(backFromImagePick)
-//                    {
-//                        drawPanel.updateImage(canvas);
-//
-//                        backFromImagePick = false;
-//
-//                    }else if(!drawPanel.isBitmapNull())
-//                    {
-//                        drawPanel.draw(canvas);
-//                    }else{
-//                        canvas.drawColor(Color.GRAY);
-//                    }
                 }
-//                Log.d("DRAW THREAD", "drawing");
-//                running = false;
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -111,9 +94,7 @@ public class DrawPanelThread extends Thread {
     }
 
     public void setScaleCoord(float x, float y) {
-//        synchronized (scaledImageXCoord){
-            scaledImageXCoord = x;
-//        }
+        scaledImageXCoord = x;
 
         scaledImageYCoord = y;
     }

@@ -110,7 +110,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         if (MainActivity.PICK_IMAGE_FINISH) {
 
             imgPath = MainActivity.mImagePath;
-            drawPanelThread.setBackFromImagePick(true);
+//            drawPanelThread.setBackFromImagePick(true);
             MainActivity.PICK_IMAGE_FINISH = false;
             CANVAS_STATE = LOAD_IMAGE_TO_CANVAS;
         }else if(bitmap != null)
@@ -125,17 +125,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         drawPanelThread.setRunning(true);
         drawPanelThread.start();
 
-//        Thread.State state = drawPanelThread.getState();
-//        if ( state== Thread.State.NEW || state == Thread.State.TERMINATED)
-//        {
-
-
-//        }
-
-
-
-
-		
 	}
 
 	@Override
@@ -271,21 +260,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
         moveScaleRect(scaledWidth, scaledHeight);
 
-
-//        options.inJustDecodeBounds = false;
-//        options.inDither = false;
-//        options.inSampleSize = 1;
-//        options.inScaled = true;
-//        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//        BitmapFactory.decodeFile(imgPath, options);
-//
-//        float desiredScale = (float)scaledWidth/bitmap.getWidth();
-//
-//        Matrix matrix = new Matrix();
-//        matrix.postScale(desiredScale, desiredScale);
         scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
-//        scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
 
         return true;
     }
