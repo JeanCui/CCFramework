@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
@@ -16,13 +15,15 @@ import android.view.View.OnTouchListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+
+import com.ccframework.jc.ccframework.BubbleWidget.CircleSpeechBubble;
+import com.ccframework.jc.ccframework.BubbleWidget.SpeechBubbleWidget;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
-	
-//	private Paint pen = new Paint();
-//	private Path path = new Path();
 
     Context mainContext;
 
@@ -49,13 +50,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
     private DrawPanelThread drawPanelThread = null;
 
-    public int CANVAS_STATE = DO_NOTHING;
-    // Status
-    static final int DO_NOTHING =           0;
-    static final int DRAW_CANVAS =          1;
-    static final int CLEAR_CANVAS =         2;
-    static final int LOAD_IMAGE_TO_CANVAS = 3;
-    static final int SCALE_IMAGE =          4;
+    // STATUS
+    public int TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
+    public int CANVAS_STATE = AppConstants.DO_NOTHING;
+
+
+
+    ArrayList<SpeechBubbleWidget> bubblesList = new ArrayList<SpeechBubbleWidget>();
 
 	public DrawPanel(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -88,6 +89,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         canvas.drawRect(scaleRectVerLeft, scaleRectVerTop, scaleRectVerRight, scaleRectVerBottom, scaleRectPaint);
         canvas.drawRect(scaleRectHorLeft, scaleRectHorTop, scaleRectHorRight, scaleRectHorBottom, scaleRectPaint);
 
+        // draw bubbles
+        for (SpeechBubbleWidget sb : bubblesList){
+            sb.draw(canvas);
+        }
 //		getHolder().unlockCanvasAndPost(canvas);
 	}
 
@@ -112,13 +117,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
             imgPath = MainActivity.mImagePath;
 //            drawPanelThread.setBackFromImagePick(true);
             MainActivity.PICK_IMAGE_FINISH = false;
-            CANVAS_STATE = LOAD_IMAGE_TO_CANVAS;
+            CANVAS_STATE = AppConstants.LOAD_IMAGE_TO_CANVAS;
         }else if(bitmap != null)
         {
-            CANVAS_STATE = DRAW_CANVAS;
+            CANVAS_STATE = AppConstants.DRAW_CANVAS;
         }else
         {
-            CANVAS_STATE = CLEAR_CANVAS;
+            CANVAS_STATE = AppConstants.CLEAR_CANVAS;
         }
 
 
@@ -155,18 +160,29 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
 
 
-    private boolean touchScaleRect(float x, float y)
+    private void touchEventDetect(float x, float y)
     {
         int left = scaleRectHorLeft - scaleRectTouchMargin;
         int top = scaleRectVerTop - scaleRectTouchMargin;
         int right = scaleRectVerRight + scaleRectTouchMargin;
         int bottom = scaleRectHorBottom + scaleRectTouchMargin;
         if(x >= left && x <= right && y <= bottom && y >= top){
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_SCALE_IMAGE;
+//            return TOUCH_EVENT;
             pressScaleRect = true;
-            return true;
+//            return true;
+        }else
+        {
+            // Add Bubble
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_ADD_BUBBLE;
+
+            //create bubble
+            bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
+            CANVAS_STATE = AppConstants.DRAW_CANVAS;
         }
-//        CANVAS_STATE = DRAW_CANVAS;
-        return false;
+
+
+        //TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
     }
 
     private void moveScaleRect(int width, int height)
@@ -271,32 +287,48 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
             case MotionEvent.ACTION_DOWN:
                 if(isBitmapNull())
                     return true;
-                touchScaleRect(event.getX(), event.getY());
-    //			path.moveTo(event.getX(), event.getY());
-    //			draw();
+
+
+                touchEventDetect(event.getX(), event.getY());
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(pressScaleRect )
+                switch (TOUCH_EVENT)
                 {
+                    case AppConstants.TOUCH_EVENT_SCALE_IMAGE:
+                        if(scaleImage(event.getX(), event.getY()))
+                        {
+                            CANVAS_STATE = AppConstants.DRAW_CANVAS;
+                        }
+                        break;
 
-//                    drawPanelThread.setScaleCoord(event.getX(), event.getY());
-//                    CANVAS_STATE = SCALE_IMAGE;
-                    if(scaleImage(event.getX(), event.getY()))
-                    {
-                        CANVAS_STATE = DRAW_CANVAS;
-
-//                        draw();
-                    }
+                    default:
+                        break;
                 }
-    //			path.lineTo(event.getX(), event.getY());
+//                if(pressScaleRect )
+//                {
+//
+//                    if(scaleImage(event.getX(), event.getY()))
+//                    {
+//                        CANVAS_STATE = AppConstants.DRAW_CANVAS;
+//                    }
+//                }
                 break;
             case MotionEvent.ACTION_UP:
-                if(pressScaleRect)
-                {
-//                    Toast.makeText(mainContext, "Touched and Move ScaleRect", Toast.LENGTH_SHORT).show();
-                    pressScaleRect = false;
-                    CANVAS_STATE = DO_NOTHING;
+                switch (TOUCH_EVENT){
+                    case AppConstants.TOUCH_EVENT_SCALE_IMAGE:
+                        pressScaleRect = false;
+                        CANVAS_STATE = AppConstants.DO_NOTHING;
+                        break;
+                    case AppConstants.TOUCH_EVENT_ADD_BUBBLE:
+                        break;
+
                 }
+                TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
+//                if(pressScaleRect)
+//                {
+//                    pressScaleRect = false;
+//                    CANVAS_STATE = AppConstants.DO_NOTHING;
+//                }
                 break;
 		}
 		return true;

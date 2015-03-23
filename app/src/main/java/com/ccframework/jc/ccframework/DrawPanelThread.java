@@ -18,11 +18,11 @@ public class DrawPanelThread extends Thread {
     private float scaledImageXCoord = 0, scaledImageYCoord = 0;
 
     // Status
-    static final int DO_NOTHING =           0;
-    static final int DRAW_CANVAS =          1;
-    static final int CLEAR_CANVAS =         2;
-    static final int LOAD_IMAGE_TO_CANVAS = 3;
-    static final int SCALE_IMAGE =          4;
+//    static final int DO_NOTHING =           0;
+//    static final int DRAW_CANVAS =          1;
+//    static final int CLEAR_CANVAS =         2;
+//    static final int LOAD_IMAGE_TO_CANVAS = 3;
+//    static final int SCALE_IMAGE =          4;
 
 
 
@@ -49,7 +49,7 @@ public class DrawPanelThread extends Thread {
         while (running){
             Canvas canvas = null;
             try{
-                if(drawPanel.CANVAS_STATE == DO_NOTHING)
+                if(drawPanel.CANVAS_STATE == AppConstants.DO_NOTHING)
                     continue;
 
 
@@ -58,20 +58,20 @@ public class DrawPanelThread extends Thread {
                 synchronized (drawPanel.getHolder()) {
                     switch (drawPanel.CANVAS_STATE) {
 
-                        case DRAW_CANVAS:
+                        case AppConstants.DRAW_CANVAS:
                             drawPanel.draw(canvas);
 
                             break;
-                        case CLEAR_CANVAS:
+                        case AppConstants.CLEAR_CANVAS:
                             canvas.drawColor(Color.GRAY);
 //                            drawPanel.CANVAS_STATE = DO_NOTHING;
                             break;
-                        case LOAD_IMAGE_TO_CANVAS:
+                        case AppConstants.LOAD_IMAGE_TO_CANVAS:
                             canvas.drawColor(Color.GRAY);
                             drawPanel.updateImage(canvas);
 //                            drawPanel.CANVAS_STATE = DO_NOTHING;
                             break;
-                        case SCALE_IMAGE:
+                        case AppConstants.SCALE_IMAGE:
                             if (drawPanel.scaleImage(scaledImageXCoord, scaledImageYCoord)) {
                                 drawPanel.draw(canvas);
                             }
@@ -79,7 +79,7 @@ public class DrawPanelThread extends Thread {
                         default:
                             break;
                     }
-                    drawPanel.CANVAS_STATE = DO_NOTHING;
+                    drawPanel.CANVAS_STATE = AppConstants.DO_NOTHING;
                 }
 
             } catch (IOException e) {
