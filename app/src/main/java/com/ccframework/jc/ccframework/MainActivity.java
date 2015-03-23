@@ -156,8 +156,6 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, SELECT_PICTURE);
 
 
