@@ -20,13 +20,14 @@ public class SpeechBubbleWidget {
     protected int widgetMargin;
     protected int widgetWidth;
     protected int widgetHeight;
+    protected int mTop, mLeft, mRight, mBottom;
 
     protected View mView; // View that this bubble to be drew on
     protected int mViewWidth;
     protected int mViewHeight;
 
-    protected int mCenterXCoord;
-    protected int mCenterYCoord;
+    protected int mCX;
+    protected int mCY;
 
     private boolean mOutline;
     protected boolean isSelected;
@@ -44,8 +45,8 @@ public class SpeechBubbleWidget {
         mView = v;
         mViewWidth = mView.getWidth();
         mViewHeight = mView.getHeight();
-        mCenterXCoord = cx;
-        mCenterYCoord = cy;
+        mCX = cx;
+        mCY = cy;
         isSelected = true;
     }
 
@@ -67,8 +68,8 @@ public class SpeechBubbleWidget {
         mView = v;
         mViewWidth = mView.getWidth();
         mViewHeight = mView.getHeight();
-        mCenterXCoord = cx;
-        mCenterYCoord = cy;
+        mCX = cx;
+        mCY = cy;
         mOutline = false;
 
         isSelected = true;
@@ -88,5 +89,25 @@ public class SpeechBubbleWidget {
     public void draw(Canvas c)
     {
 
+    }
+
+    public boolean inBubbleArea(int x, int y){
+        mTop    = mCY - widgetHeight/2;
+        mLeft   = mCX - widgetWidth/2;
+        mRight  = mCX + widgetWidth/2;
+        mBottom = mCY + widgetHeight/2;
+
+        if(x > mLeft && x < mRight && y > mTop && y < mBottom)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void setCX(int x){
+        mCX = x;
+    }
+    public void setCY(int y){
+        mCY = y;
     }
 }

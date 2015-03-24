@@ -11,6 +11,13 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
 
     protected int radius;
 
+    private void drawSelectedOutline(Canvas c)
+    {
+        if(isSelected)
+        {
+            c.drawCircle(mCX, mCY, radius, mOutlinePaint);
+        }
+    }
 
     public CircleSpeechBubble(Paint p, View v, int cx, int cy)
     {
@@ -31,16 +38,17 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
         radius = widgetWidth>widgetHeight?widgetHeight:widgetWidth;
         radius = radius/2 - widgetMargin;
 
-        c.drawCircle(mCenterXCoord, mCenterYCoord, radius, mPaint);
+        c.drawCircle(mCX, mCY, radius, mPaint);
+
 
         drawSelectedOutline(c);
     }
 
-    private void drawSelectedOutline(Canvas c)
-    {
-        if(isSelected)
-        {
-            c.drawCircle(mCenterXCoord, mCenterYCoord, radius, mOutlinePaint);
-        }
-    }
+//    public boolean inBubbleArea(int x, int y){
+//        return super.inBubbleArea(x, y);
+//
+//
+//    }
+
+
 }

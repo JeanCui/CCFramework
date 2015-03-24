@@ -56,7 +56,9 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
 
 
+    // Speech Bubble
     ArrayList<SpeechBubbleWidget> bubblesList = new ArrayList<SpeechBubbleWidget>();
+    private static int mCurrentBubbleId = -1;
 
 	public DrawPanel(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -88,6 +90,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         for (SpeechBubbleWidget sb : bubblesList){
             sb.draw(canvas);
         }
+
 //		getHolder().unlockCanvasAndPost(canvas);
 	}
 
@@ -160,19 +163,59 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         }
     }
 
+    private void updateSelectedBubble(int bID){
+        if(mCurrentBubbleId == -1 || bID == mCurrentBubbleId)
+            return;
 
-    private void touchEventDetect(float x, float y)
+        bubblesList.get(mCurrentBubbleId).setSelected(false);
+
+        mCurrentBubbleId = bID;
+        SpeechBubbleWidget cur = bubblesList.get(mCurrentBubbleId);
+        cur.setSelected(true);
+    }
+
+
+    private int touchDownBubbleId = -1;
+    private int inABubbleArea(int x, int y){
+        int current = 0;
+        for (SpeechBubbleWidget sbw : bubblesList){
+            if(sbw.inBubbleArea(x, y))
+            {
+                return current;
+            }
+            current ++;
+        }
+        return -1;
+    }
+
+    private void touchDownEventDetect(float x, float y)
     {
         int left = scaleRectHorLeft - scaleRectTouchMargin;
         int top = scaleRectVerTop - scaleRectTouchMargin;
         int right = scaleRectVerRight + scaleRectTouchMargin;
         int bottom = scaleRectHorBottom + scaleRectTouchMargin;
+
+        // Touch down on Scale Rect area
         if(x >= left && x <= right && y <= bottom && y >= top){
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_SCALE_IMAGE;
-//            return TOUCH_EVENT;
             pressScaleRect = true;
+            return;
+//            return TOUCH_EVENT;
+
 //            return true;
-        }else
+        }
+
+
+        touchDownBubbleId = inABubbleArea((int)x, (int)y);
+
+        // Touch down on a bubble area
+        if(touchDownBubbleId != -1){
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE;
+            updateSelectedBubble(touchDownBubbleId);
+            return;
+        }
+
+         //if click on empty space
         {
             // Add Bubble
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_ADD_BUBBLE;
@@ -181,11 +224,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
             newBubbleCreated();
             //create bubble
             bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
+            mCurrentBubbleId = bubblesList.size()-1;
             CANVAS_STATE = AppConstants.DRAW_CANVAS;
         }
 
-
-        //TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
     }
 
     private void moveScaleRect(int width, int height)
@@ -283,6 +325,14 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
         return true;
     }
+    public void moveBubble(float x, float y){
+        if(touchDownBubbleId == -1)
+            return;
+
+        SpeechBubbleWidget currentBubble = bubblesList.get(touchDownBubbleId);
+        currentBubble.setCX((int)x);
+        currentBubble.setCY((int)y);
+    }
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		switch(event.getAction())
@@ -291,9 +341,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                 if(isBitmapNull())
                     return true;
 
+                touchDownEventDetect(event.getX(), event.getY());
 
-                touchEventDetect(event.getX(), event.getY());
                 break;
+
             case MotionEvent.ACTION_MOVE:
                 switch (TOUCH_EVENT)
                 {
@@ -302,6 +353,11 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                         {
                             CANVAS_STATE = AppConstants.DRAW_CANVAS;
                         }
+                        break;
+
+                    case AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE:
+                        moveBubble(event.getX(), event.getY());
+                        CANVAS_STATE = AppConstants.DRAW_CANVAS;
                         break;
 
                     default:
@@ -323,6 +379,8 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                         CANVAS_STATE = AppConstants.DO_NOTHING;
                         break;
                     case AppConstants.TOUCH_EVENT_ADD_BUBBLE:
+                        break;
+                    case AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE:
                         break;
 
                 }
