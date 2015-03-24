@@ -39,6 +39,8 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
     private void drawSelectedOutline(Canvas c)
     {
         if(isSelected)
+        {
             c.drawCircle(mCenterXCoord, mCenterYCoord, radius, mOutlinePaint);
+        }
     }
 }

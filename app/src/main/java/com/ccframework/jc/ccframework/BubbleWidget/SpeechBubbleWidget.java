@@ -74,6 +74,11 @@ public class SpeechBubbleWidget {
         isSelected = true;
     }
 
+    public void setSelected(boolean b)
+    {
+        isSelected = b;
+    }
+
     public void setColor(int c)
     {
         mPaint.setColor(c);
