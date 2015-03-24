@@ -36,7 +36,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
     private int origWidth, origHeight, scaledWidth, scaledHeight;
     private float aspectRatio = 1;
     private Paint scaleRectPaint = new Paint();
-    private Paint rectPaint = new Paint();
+
     private int scaleRectVerLeft =0, scaleRectVerTop =0, scaleRectVerRight =0, scaleRectVerBottom =0;
     private int scaleRectHorLeft =0, scaleRectHorTop =0, scaleRectHorRight =0, scaleRectHorBottom =0;
     private int scaleRectWidth = 30, scaleRectHeight = 80;
@@ -65,15 +65,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 		getHolder().addCallback(this);
 		setOnTouchListener(this);
 
-//        drawPanelThread = new DrawPanelThread(this);
-
-        scaleRectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
+        scaleRectPaint.setColor(getResources().getColor(R.color.sky_blue));
         scaleRectPaint.setStyle(Style.FILL);
 
-        // Experimental code
-        rectPaint.setColor(getResources().getColor(R.color.blue_scale_rect));
-        rectPaint.setStyle(Style.STROKE);
-        rectPaint.setStrokeWidth(5);
+
 	}
 	public void clearCanvas(Canvas canvas)
     {

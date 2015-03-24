@@ -21,4 +21,6 @@ public final class AppConstants {
     // Speech Bubble
     public static final int BUBBLE_WIDGET_WIDTH = 200;
     public static final int BUBBLE_WIDGET_HEIGHT = 200;
+
+    public static final int BUBBLE_OUTLINE_WIDTH = 8;
 }
