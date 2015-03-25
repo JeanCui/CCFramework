@@ -7,8 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.os.CountDownTimer;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -23,7 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
+public class DrawPanel extends SurfaceView implements Callback, OnTouchListener, GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener{
 
     Context mainContext;
 
@@ -71,6 +75,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         scaleRectPaint.setStyle(Style.FILL);
 
 
+        // Instantiate the gesture detector with the
+        // application context and an implementation of
+        // GestureDetector.OnGestureListener
+        mDetector = new GestureDetectorCompat(this.getContext(),this);
+        // Set the gesture detector as the double tap
+        // listener.
+        mDetector.setOnDoubleTapListener(this);
 	}
 	public void clearCanvas(Canvas canvas)
     {
@@ -188,6 +199,90 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         return -1;
     }
 
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
+
+    private class LongPressCountTimer extends CountDownTimer{
+
+        private int hostEvent;
+        private boolean timeout = false;
+
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public LongPressCountTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            switch (hostEvent)
+            {
+                case AppConstants.TOUCH_EVENT_MOVE_BUBBLE:
+            }
+            timeout = true;
+        }
+
+        public void customStart(int event){
+            hostEvent = event;
+            timeout = false;
+            start();
+        }
+    }
+
+    private LongPressCountTimer longPressCount = new LongPressCountTimer(1500, 1500);
+
     private void touchDownEventDetect(float x, float y)
     {
         int left = scaleRectHorLeft - scaleRectTouchMargin;
@@ -210,8 +305,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 
         // Touch down on a bubble area
         if(touchDownBubbleId != -1){
-            TOUCH_EVENT = AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE;
+//            TOUCH_EVENT = AppConstants.TOUCH_EVENT_MOVE_BUBBLE;
+            longPressCount.customStart(AppConstants.TOUCH_EVENT_MOVE_BUBBLE);
             updateSelectedBubble(touchDownBubbleId);
+
             return;
         }
 
@@ -333,10 +430,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
         currentBubble.setCX((int)x);
         currentBubble.setCY((int)y);
     }
-	@Override
+
+    private GestureDetectorCompat mDetector;
+    @Override
 	public boolean onTouch(View v, MotionEvent event) {
 		switch(event.getAction())
 		{
+
             case MotionEvent.ACTION_DOWN:
                 if(isBitmapNull())
                     return true;
@@ -355,7 +455,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                         }
                         break;
 
-                    case AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE:
+                    case AppConstants.TOUCH_EVENT_MOVE_BUBBLE:
                         moveBubble(event.getX(), event.getY());
                         CANVAS_STATE = AppConstants.DRAW_CANVAS;
                         break;
@@ -380,7 +480,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
                         break;
                     case AppConstants.TOUCH_EVENT_ADD_BUBBLE:
                         break;
-                    case AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE:
+                    case AppConstants.TOUCH_EVENT_MOVE_BUBBLE:
                         break;
 
                 }
@@ -392,6 +492,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener{
 //                }
                 break;
 		}
+        this.mDetector.onTouchEvent(event);
 		return true;
 	}
 	

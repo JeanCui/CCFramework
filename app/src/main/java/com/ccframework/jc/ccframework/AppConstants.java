@@ -16,7 +16,8 @@ public final class AppConstants {
     static final int TOUCH_EVENT_NONE = 0;
     static final int TOUCH_EVENT_SCALE_IMAGE = 1;
     static final int TOUCH_EVENT_ADD_BUBBLE = 2;
-    static final int TOUCH_EVENT_DOWN_IN_BUBBLE = 3;
+    static final int TOUCH_EVENT_MOVE_BUBBLE = 3;
+    static final int TOUCH_EVENT_CLICK_BUBBLE = 4;
 
     // Speech Bubble
     public static final int BUBBLE_WIDGET_WIDTH = 200;
