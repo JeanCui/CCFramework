@@ -32,6 +32,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
     Context mainContext;
 
 
+    private static final String TAG = "DRAWPANEL";
     private Bitmap bitmap = null;
     private Bitmap scaledBitmap;
     private int leftMargin = 10, topMargin = 10;
@@ -199,8 +200,15 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         return -1;
     }
 
+    private void touchEventInitialize(){
+        TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
+    }
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
+
+
+
+
         return false;
     }
 
@@ -226,7 +234,20 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        return false;
+
+        Log.i(TAG, "----onSingleTapUp");
+//        touchDownBubbleId = inABubbleArea((int)e.getX(), (int)e.getY());
+        // One Bubble Is Selected
+        if(TOUCH_EVENT == AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE )
+        {
+
+            updateSelectedBubble(touchDownBubbleId);
+            CANVAS_STATE = AppConstants.DRAW_CANVAS;
+
+            // Reinit TOUCH_EVENT
+            touchEventInitialize();
+        }
+        return true;
     }
 
     @Override
@@ -237,6 +258,8 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
     @Override
     public void onLongPress(MotionEvent e) {
 
+        Log.i(TAG, "----onLongPress");
+
     }
 
     @Override
@@ -244,44 +267,9 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         return false;
     }
 
-    private class LongPressCountTimer extends CountDownTimer{
 
-        private int hostEvent;
-        private boolean timeout = false;
 
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public LongPressCountTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            switch (hostEvent)
-            {
-                case AppConstants.TOUCH_EVENT_MOVE_BUBBLE:
-            }
-            timeout = true;
-        }
-
-        public void customStart(int event){
-            hostEvent = event;
-            timeout = false;
-            start();
-        }
-    }
-
-    private LongPressCountTimer longPressCount = new LongPressCountTimer(1500, 1500);
+//    private LongPressCountTimer longPressCount = new LongPressCountTimer(1500, 1500);
 
     private void touchDownEventDetect(float x, float y)
     {
@@ -304,14 +292,16 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         touchDownBubbleId = inABubbleArea((int)x, (int)y);
 
         // Touch down on a bubble area
-        if(touchDownBubbleId != -1){
+//        if(touchDownBubbleId != -1){
 //            TOUCH_EVENT = AppConstants.TOUCH_EVENT_MOVE_BUBBLE;
-            longPressCount.customStart(AppConstants.TOUCH_EVENT_MOVE_BUBBLE);
-            updateSelectedBubble(touchDownBubbleId);
 
-            return;
-        }
+//            updateSelectedBubble(touchDownBubbleId);
 
+//            return;
+//        }
+
+        // IF IT's NOT IN BUBBLE AREA
+        if(touchDownBubbleId == -1)
          //if click on empty space
         {
             // Add Bubble
@@ -323,6 +313,10 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
             mCurrentBubbleId = bubblesList.size()-1;
             CANVAS_STATE = AppConstants.DRAW_CANVAS;
+        }else
+        {
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE;
+            Log.i(TAG, "----ACTION DOWN");
         }
 
     }
@@ -446,6 +440,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                Log.i(TAG, "----ACTION MOVE");
                 switch (TOUCH_EVENT)
                 {
                     case AppConstants.TOUCH_EVENT_SCALE_IMAGE:
@@ -477,14 +472,17 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
                     case AppConstants.TOUCH_EVENT_SCALE_IMAGE:
                         pressScaleRect = false;
                         CANVAS_STATE = AppConstants.DO_NOTHING;
+                        touchEventInitialize();
                         break;
                     case AppConstants.TOUCH_EVENT_ADD_BUBBLE:
+                        touchEventInitialize();
                         break;
                     case AppConstants.TOUCH_EVENT_MOVE_BUBBLE:
+                        touchEventInitialize();
                         break;
 
                 }
-                TOUCH_EVENT = AppConstants.TOUCH_EVENT_NONE;
+
 //                if(pressScaleRect)
 //                {
 //                    pressScaleRect = false;
