@@ -25,4 +25,6 @@ public final class AppConstants {
     public static final int BUBBLE_WIDGET_HEIGHT = 200;
 
     public static final int BUBBLE_OUTLINE_WIDTH = 8;
+    public static final int BUBBLE_MOVE_TIMEOUT = 50;
+
 }

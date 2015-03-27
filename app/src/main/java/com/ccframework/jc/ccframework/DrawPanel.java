@@ -21,6 +21,8 @@ import android.view.SurfaceView;
 
 import com.ccframework.jc.ccframework.BubbleWidget.CircleSpeechBubble;
 import com.ccframework.jc.ccframework.BubbleWidget.SpeechBubbleWidget;
+import com.ccframework.jc.ccframework.Helpers.CallbackInterface;
+import com.ccframework.jc.ccframework.Helpers.CountDownTrigger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -241,8 +243,9 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         if(TOUCH_EVENT == AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE )
         {
 
-            updateSelectedBubble(touchDownBubbleId);
-            CANVAS_STATE = AppConstants.DRAW_CANVAS;
+            moveBubbleCountDown.cancel();
+//            updateSelectedBubble(touchDownBubbleId);
+//            CANVAS_STATE = AppConstants.DRAW_CANVAS;
 
             // Reinit TOUCH_EVENT
             touchEventInitialize();
@@ -268,6 +271,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
     }
 
 
+    CountDownTrigger moveBubbleCountDown;
+    class MoveBubbleCallback implements CallbackInterface{
+        @Override
+        public void CallbackHandler() {
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_MOVE_BUBBLE;
+        }
+    }
 
 //    private LongPressCountTimer longPressCount = new LongPressCountTimer(1500, 1500);
 
@@ -291,14 +301,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 
         touchDownBubbleId = inABubbleArea((int)x, (int)y);
 
-        // Touch down on a bubble area
-//        if(touchDownBubbleId != -1){
-//            TOUCH_EVENT = AppConstants.TOUCH_EVENT_MOVE_BUBBLE;
-
-//            updateSelectedBubble(touchDownBubbleId);
-
-//            return;
-//        }
 
         // IF IT's NOT IN BUBBLE AREA
         if(touchDownBubbleId == -1)
@@ -313,9 +315,19 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
             mCurrentBubbleId = bubblesList.size()-1;
             CANVAS_STATE = AppConstants.DRAW_CANVAS;
+
+            // Added and be able to move
+            TOUCH_EVENT = AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE;
+            touchDownBubbleId = mCurrentBubbleId;
+            moveBubbleCountDown = new CountDownTrigger(new MoveBubbleCallback(), AppConstants.BUBBLE_MOVE_TIMEOUT, AppConstants.BUBBLE_MOVE_TIMEOUT);
         }else
         {
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_DOWN_IN_BUBBLE;
+
+            updateSelectedBubble(touchDownBubbleId);
+            CANVAS_STATE = AppConstants.DRAW_CANVAS;
+
+            moveBubbleCountDown = new CountDownTrigger(new MoveBubbleCallback(), AppConstants.BUBBLE_MOVE_TIMEOUT, AppConstants.BUBBLE_MOVE_TIMEOUT);
             Log.i(TAG, "----ACTION DOWN");
         }
 
