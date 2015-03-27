@@ -209,8 +209,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
     public boolean onSingleTapConfirmed(MotionEvent e) {
 
 
-
-
         return false;
     }
 
@@ -279,7 +277,6 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         }
     }
 
-//    private LongPressCountTimer longPressCount = new LongPressCountTimer(1500, 1500);
 
     private void touchDownEventDetect(float x, float y)
     {
@@ -293,9 +290,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_SCALE_IMAGE;
             pressScaleRect = true;
             return;
-//            return TOUCH_EVENT;
 
-//            return true;
         }
 
 
