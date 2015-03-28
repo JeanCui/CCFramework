@@ -1,3 +1,5 @@
 1. too much work on main thread (Floating actions button)
 
 2. support zoom in/out image using fingers touch
+
+3. add more bubble sytles, friday night, have fun...
