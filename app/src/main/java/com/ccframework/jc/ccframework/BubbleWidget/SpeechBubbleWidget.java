@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.View;
 
 import com.ccframework.jc.ccframework.AppConstants;
+import com.ccframework.jc.ccframework.Helpers.Point;
 import com.ccframework.jc.ccframework.R;
 
 /**
@@ -31,6 +32,8 @@ public class SpeechBubbleWidget {
 
     private boolean mOutline;
     protected boolean isSelected;
+    protected BubbleTailWidget mTailWidget;
+    protected Point mTailPoint;
     protected int outlineStrokeWidth = AppConstants.BUBBLE_OUTLINE_WIDTH;
 
 
@@ -70,6 +73,7 @@ public class SpeechBubbleWidget {
         mViewHeight = mView.getHeight();
         mCX = cx;
         mCY = cy;
+
         mOutline = false;
 
         isSelected = true;
@@ -86,10 +90,16 @@ public class SpeechBubbleWidget {
 
     }
 
+    public void setTailPoint(Point p){
+        mTailPoint = p;
+    }
+
     public void draw(Canvas c)
     {
+        mTailWidget.drawTail(c);
 
     }
+
 
     public boolean inBubbleArea(int x, int y){
         mTop    = mCY - widgetHeight/2;

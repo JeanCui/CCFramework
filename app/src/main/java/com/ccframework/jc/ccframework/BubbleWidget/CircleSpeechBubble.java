@@ -4,12 +4,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
 
+import com.ccframework.jc.ccframework.Helpers.Point;
+
 /**
  * Created by Jin Cui on 3/22/2015.
  */
 public class CircleSpeechBubble extends SpeechBubbleWidget {
 
     protected int radius;
+    private Point p1, p2;
+
 
     private void drawSelectedOutline(Canvas c)
     {
@@ -42,6 +46,11 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
 
 
         drawSelectedOutline(c);
+    }
+
+    public void drawTail(Canvas c)
+    {
+        super.drawTail(c);
     }
 
 //    public boolean inBubbleArea(int x, int y){

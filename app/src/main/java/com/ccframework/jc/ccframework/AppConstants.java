@@ -27,4 +27,7 @@ public final class AppConstants {
     public static final int BUBBLE_OUTLINE_WIDTH = 8;
     public static final int BUBBLE_MOVE_TIMEOUT = 50;
 
+    //Bubble Tail
+    public static final float BUBBLE_TRIANGLE_DEGREE = 30;
+
 }
