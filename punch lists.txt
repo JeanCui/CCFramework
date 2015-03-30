@@ -3,3 +3,5 @@
 2. support zoom in/out image using fingers touch
 
 3. add more bubble sytles, friday night, have fun...
+
+4. need framework redesign thing, reading book
