@@ -18,7 +18,7 @@ public class Point {
         x = _x;
         y = _y;
     }
-    
+
     public float getSquare(){
         return x*x + y*y;
     }
@@ -26,5 +26,9 @@ public class Point {
         return (float)Math.sqrt(x*x + y*y);
     }
 
+    public void normalize(){
+        float value = getValue();
+        x /= value; y /= value;
+    }
 
 }
