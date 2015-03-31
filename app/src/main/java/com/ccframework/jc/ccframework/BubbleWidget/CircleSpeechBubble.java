@@ -48,10 +48,7 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
         drawSelectedOutline(c);
     }
 
-    public void drawTail(Canvas c)
-    {
-        super.drawTail(c);
-    }
+
 
 //    public boolean inBubbleArea(int x, int y){
 //        return super.inBubbleArea(x, y);

@@ -40,6 +40,5 @@ public class BubbleTailWidget {
     void drawTail(Canvas c)
     {
 
-
     }
 }
