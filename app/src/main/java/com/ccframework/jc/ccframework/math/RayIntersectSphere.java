@@ -67,8 +67,8 @@ public class RayIntersectSphere {
     public Point getClosetIntersectPoint(){
 
         float a = mSegmentVector.getSquare();
-        float b = 2 * (mSegmentVector.x*mSegmentStartPoint.x + mSegmentVector.y*mSegmentStartPoint.y);
-        float c = mSegmentStartPoint.getSquare() - mSphereRadius*mSphereRadius;
+        float b = 2*(mSegmentVector.x*mSegmentStartPoint.x + mSegmentVector.y*mSegmentStartPoint.y - mSegmentVector.x*mSphereCenter.x - mSegmentVector.y * mSphereCenter.y);//2 * (mSegmentVector.x*mSegmentStartPoint.x + mSegmentVector.y*mSegmentStartPoint.y);
+        float c = mSegmentStartPoint.getSquare() - 2*mSegmentStartPoint.x*mSphereCenter.x - 2*mSegmentStartPoint.y*mSphereCenter.y + mSphereCenter.getSquare() - mSphereRadius*mSphereRadius;//mSegmentStartPoint.getSquare() - mSphereRadius*mSphereRadius;
 
         float D = b*b - 4*a*c;
         if(D == 0){

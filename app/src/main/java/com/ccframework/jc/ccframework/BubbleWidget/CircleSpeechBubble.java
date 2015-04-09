@@ -26,14 +26,21 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
     public CircleSpeechBubble(Paint p, View v, int cx, int cy)
     {
         super(p, v, cx, cy);
-        radius = 0;
+
+        radius = widgetWidth>widgetHeight?widgetHeight:widgetWidth;
+        radius = radius/2 - widgetMargin;
+        mTailWidget = new TriangleTail(cx, cy, radius);
+        mTailWidget.setTailPoint(mCX - (radius+20), mCY + (radius+20));
     }
     public CircleSpeechBubble(View v, int cx, int cy)
     {
         super(v, cx, cy);
+        radius = widgetWidth>widgetHeight?widgetHeight:widgetWidth;
+        radius = radius/2 - widgetMargin;
 
-        radius = 0;
 
+        mTailWidget = new TriangleTail(cx, cy, radius);
+        mTailWidget.setTailPoint(mCX - (radius+20), mCY + (radius+20));
     }
 
     public void draw(Canvas c){
@@ -46,6 +53,10 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
 
 
         drawSelectedOutline(c);
+
+        if(mHasTail){
+            mTailWidget.drawTail(c);
+        }
     }
 
 

@@ -22,12 +22,13 @@ public class Point {
     public float getSquare(){
         return x*x + y*y;
     }
-    public float getValue(){
-        return (float)Math.sqrt(x*x + y*y);
+    public double getValue(){
+        double square = x*x + y*y;
+        return Math.sqrt(square);
     }
 
     public void normalize(){
-        float value = getValue();
+        double value = getValue();
         x /= value; y /= value;
     }
 

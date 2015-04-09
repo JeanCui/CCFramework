@@ -11,8 +11,6 @@ import com.ccframework.jc.ccframework.Helpers.Point;
  */
 public class BubbleTailWidget {
 
-
-
 //    int mColor;
     protected Paint mPaint;
     protected Point mTailPoint;
@@ -28,16 +26,22 @@ public class BubbleTailWidget {
         mPaint = p;
     }
 
-    public void setIntersectPoints(Point p1, Point p2){
-        mInterP1 = p1;
-        mInterP2 = p2;
-    }
+
 
     public void setTailPoint(Point p){
         mTailPoint = p;
     }
+    public void setTailPoint(float x, float y){
+        if(mTailPoint == null)
+            mTailPoint = new Point(x, y);
+        else {
+            mTailPoint.x = x;
+            mTailPoint.y = y;
+        }
 
-    void drawTail(Canvas c)
+    }
+
+    public void drawTail(Canvas c)
     {
 
     }
