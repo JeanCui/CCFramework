@@ -34,7 +34,7 @@ public class SpeechBubbleWidget {
     protected boolean isSelected;
     protected boolean mHasTail;
     protected BubbleTailWidget mTailWidget;
-    protected Point mTailPoint;
+//    protected Point mTailPoint;
     protected int outlineStrokeWidth = AppConstants.BUBBLE_OUTLINE_WIDTH;
 
 
@@ -95,13 +95,12 @@ public class SpeechBubbleWidget {
 
     }
 
-    public void setTailPoint(Point p){
-        mTailPoint = p;
-    }
+//    public void setTailPoint(Point p){
+//        mTailPoint = p;
+//    }
 
     public void draw(Canvas c)
     {
-//        mTailWidget.drawTail(c);
 
     }
 
@@ -124,5 +123,15 @@ public class SpeechBubbleWidget {
     }
     public void setCY(int y){
         mCY = y;
+    }
+
+    public void move(int x, int y){
+        mCX = x;
+        mCY = y;
+
+        if(mHasTail)
+        {
+            mTailWidget.setBubbleCoord(x, y);
+        }
     }
 }

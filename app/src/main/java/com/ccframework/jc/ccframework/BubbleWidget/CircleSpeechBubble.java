@@ -39,8 +39,14 @@ public class CircleSpeechBubble extends SpeechBubbleWidget {
         radius = radius/2 - widgetMargin;
 
 
-        mTailWidget = new TriangleTail(cx, cy, radius);
-        mTailWidget.setTailPoint(mCX - (radius+20), mCY + (radius+20));
+        if(mHasTail)
+        {
+            mTailWidget = new TriangleTail(cx, cy, radius);
+            mTailWidget.setTailPoint(mCX - (radius+20), mCY + (radius+20));
+
+            mTailWidget.createTail();
+        }
+
     }
 
     public void draw(Canvas c){

@@ -170,11 +170,12 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 		
 	}
 
-    private void newBubbleCreated()
+    private void createNewBubble(int x, int y)
     {
         for(SpeechBubbleWidget sbw : bubblesList){
             sbw.setSelected(false);
         }
+        bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
     }
 
     private void updateSelectedBubble(int bID){
@@ -304,11 +305,11 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             // Add Bubble
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_ADD_BUBBLE;
 
-            //pre create bubble
-            newBubbleCreated();
-            //create bubble
-            bubblesList.add(new CircleSpeechBubble(this, (int)x, (int)y));
-            mCurrentBubbleId = bubblesList.size()-1;
+            // create bubble
+            createNewBubble((int)x, (int)y);
+
+
+            mCurrentBubbleId = bubblesList.size() - 1;
             CANVAS_STATE = AppConstants.DRAW_CANVAS;
 
             // Added and be able to move
@@ -428,8 +429,9 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             return;
 
         SpeechBubbleWidget currentBubble = bubblesList.get(touchDownBubbleId);
-        currentBubble.setCX((int)x);
-        currentBubble.setCY((int)y);
+        currentBubble.move((int)x, (int)y);
+//        currentBubble.setCX((int)x);
+//        currentBubble.setCY((int)y);
     }
 
     private GestureDetectorCompat mDetector;

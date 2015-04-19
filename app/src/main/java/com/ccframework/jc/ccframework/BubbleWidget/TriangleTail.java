@@ -15,9 +15,10 @@ import com.ccframework.jc.ccframework.math.RayIntersectSphere;
 public class TriangleTail extends BubbleTailWidget {
 
     private float mDegree;
-    private int mSphereX, mSphereY;
+//    private int mBubbleCX, mBubbleCY;
     private int mSphereRadius;
     private RayIntersectSphere rayIntersectSphere = new RayIntersectSphere();
+    Path mTailTrianglePath = new Path();
 
     public TriangleTail()
     {
@@ -28,16 +29,16 @@ public class TriangleTail extends BubbleTailWidget {
         super();
         mDegree = AppConstants.BUBBLE_TRIANGLE_DEGREE;
 
-        mSphereX = cx;
-        mSphereY = cy;
+        mBubbleCX = cx;
+        mBubbleCY = cy;
         mSphereRadius = radius;
     }
 
     public TriangleTail(int cx, int cy){
         super();
         mDegree = AppConstants.BUBBLE_TRIANGLE_DEGREE;
-        mSphereX = cx;
-        mSphereY = cy;
+        mBubbleCX = cx;
+        mBubbleCY = cy;
     }
 
     public TriangleTail(Paint p){
@@ -55,11 +56,20 @@ public class TriangleTail extends BubbleTailWidget {
     }
 
 
+    public void setBubbleCoord(int x, int y){
+        super.setBubbleCoord(x, y);
+
+//        setTailPoint(mBubbleCX - (mSphereRadius+20), mBubbleCY + (mSphereRadius+20));
+
+
+    }
+
+
 
     private void calculateIntersectPoints(){
 
         rayIntersectSphere.setSegmentStartPoint(mTailPoint);
-        Point tailToCircle = new Point(mSphereX - mTailPoint.x, mSphereY - mTailPoint.y);
+        Point tailToCircle = new Point(mBubbleCX - mTailPoint.x, mBubbleCY - mTailPoint.y);
         tailToCircle.normalize();
 
         //TEST
@@ -76,7 +86,7 @@ public class TriangleTail extends BubbleTailWidget {
         segmentVector1.y = (float) (tailToCircle.x * sin_a1 + tailToCircle.y * cos_a1);
 
 
-        rayIntersectSphere.setSphereCenter(mSphereX, mSphereY);
+        rayIntersectSphere.setSphereCenter(mBubbleCX, mBubbleCY);
         rayIntersectSphere.setSphereRadius(mSphereRadius);
 
         rayIntersectSphere.setSegmentVector(segmentVector1);
@@ -98,31 +108,27 @@ public class TriangleTail extends BubbleTailWidget {
     }
 
 
+    public void createTail(){
+        super.createTail();
+        calculateIntersectPoints();
+    }
 
-    Path mTrianglePath = new Path();
+
 
     public void drawTail(Canvas c){
 
         super.drawTail(c);
 
-        calculateIntersectPoints();
-//        float[] pts = {mInterP1.x, mInterP1.y, mTailPoint.x, mTailPoint.y, mInterP2.x, mInterP2.y};
-//        float[] pts = {100 , 100, 200, 100,     200, 100, 200, 200,         200, 200, 100, 100};
+        mTailTrianglePath.reset();
 
-        mTrianglePath.moveTo(mInterP1.x, mInterP1.y);
-        mTrianglePath.lineTo( mTailPoint.x, mTailPoint.y);
+        mTailTrianglePath.moveTo(mInterP1.x, mInterP1.y);
+        mTailTrianglePath.lineTo( mTailPoint.x, mTailPoint.y);
 //        mTrianglePath.moveTo( mTailPoint.x, mTailPoint.y);
-        mTrianglePath.lineTo(mInterP2.x, mInterP2.y);
+        mTailTrianglePath.lineTo(mInterP2.x, mInterP2.y);
 //        mTrianglePath.moveTo(mInterP2.x, mInterP2.y);
-        mTrianglePath.lineTo(mInterP1.x,  mInterP1.y);
-//        mTrianglePath.moveTo(100,100);
-//        mTrianglePath.lineTo( 200, 100);
-//        mTrianglePath.moveTo( 200, 100);
-//        mTrianglePath.lineTo(200, 200);
-//        mTrianglePath.moveTo(200, 200);
-//        mTrianglePath.lineTo(100 , 100);
-        mTrianglePath.close();
-        c.drawPath(mTrianglePath, mPaint);
+//        mTrianglePath.lineTo(mInterP1.x,  mInterP1.y);
+        mTailTrianglePath.close();
+        c.drawPath(mTailTrianglePath, mPaint);
 //        c.drawLines(pts, mPaint);
 //        c.drawVertices(Canvas.VertexMode.TRIANGLES, pts.length, pts,0, null, 0, null, 0, null, 0, 0, mPaint);
     }

@@ -32,4 +32,12 @@ public class Point {
         x /= value; y /= value;
     }
 
+    public void add(int _x , int _y){
+        x += _x;
+        y += _y;
+    }
+    public void add(float _x, float _y){
+        x += _x;
+        y += _y;
+    }
 }
