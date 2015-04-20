@@ -1,5 +1,8 @@
 package com.ccframework.jc.ccframework;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,11 +21,15 @@ import android.view.View.OnTouchListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.ImageView;
 
 import com.ccframework.jc.ccframework.BubbleWidget.CircleSpeechBubble;
 import com.ccframework.jc.ccframework.BubbleWidget.SpeechBubbleWidget;
 import com.ccframework.jc.ccframework.Helpers.CallbackInterface;
 import com.ccframework.jc.ccframework.Helpers.CountDownTrigger;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,6 +70,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 
 
 
+
     // Speech Bubble
     ArrayList<SpeechBubbleWidget> bubblesList = new ArrayList<SpeechBubbleWidget>();
     private static int mCurrentBubbleId = -1;
@@ -85,6 +93,8 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
         // Set the gesture detector as the double tap
         // listener.
         mDetector.setOnDoubleTapListener(this);
+
+
 	}
 	public void clearCanvas(Canvas canvas)
     {
@@ -306,7 +316,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
             TOUCH_EVENT = AppConstants.TOUCH_EVENT_ADD_BUBBLE;
 
             // create bubble
-            createNewBubble((int)x, (int)y);
+            createNewBubble((int) x, (int) y);
 
 
             mCurrentBubbleId = bubblesList.size() - 1;

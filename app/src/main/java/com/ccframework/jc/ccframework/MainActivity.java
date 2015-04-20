@@ -1,10 +1,16 @@
 package com.ccframework.jc.ccframework;
 
+
 import com.ccframework.weibo.activities.WBAuthActivity;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
@@ -13,12 +19,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.ccframework.facebook.activities.FacebookActivity;
 import com.ccframework.twitter.activities.TwitterActivity;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
@@ -59,6 +73,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     private DrawPanel drawPanel;
+    private Toolbar toolBar;
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
 
@@ -69,12 +84,16 @@ public class MainActivity extends ActionBarActivity {
 
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
+
+    FloatingActionButton rightLowerButton ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         drawPanel = (DrawPanel)findViewById(R.id.draw);
+        toolBar = (Toolbar) findViewById(R.id.tool_bar);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar with setSupportActionBar() call
@@ -93,6 +112,7 @@ public class MainActivity extends ActionBarActivity {
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
 
         mRecyclerView.setLayoutManager(mLayoutManager);
+
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
         mDrawerToggle = new ActionBarDrawerToggle(this,Drawer,toolbar,R.string.openDrawer,R.string.closeDrawer){
@@ -161,6 +181,85 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
+
+        ViewTreeObserver vto = drawPanel.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onGlobalLayout() {
+                int startX = drawPanel.getLeft();
+                int startY = drawPanel.getTop();
+
+                int toolBarWidth = toolBar.getHeight();
+                FloatingActionButton.LayoutParams lp = new FloatingActionButton.LayoutParams(100, 100);
+                lp.leftMargin = startX + 200;
+                lp.topMargin = startY + 200 + toolBarWidth;
+                rightLowerButton.setLayoutParams(lp);
+
+                drawPanel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+
+
+        // Set up the white button on the lower right corner
+        // more or less with default parameter
+        final ImageView fabIconNew = new ImageView(this);
+//        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
+
+
+
+        rightLowerButton =  new FloatingActionButton.Builder(this).setPosition(8)
+                .setContentView(fabIconNew)
+                .build();
+
+
+        SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
+        ImageView rlIcon1 = new ImageView(this);
+        ImageView rlIcon2 = new ImageView(this);
+        ImageView rlIcon3 = new ImageView(this);
+        ImageView rlIcon4 = new ImageView(this);
+
+
+
+        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat_light));
+        rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_light));
+        rlIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video_light));
+        rlIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_place_light));
+
+
+        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
+        // Set 4 default SubActionButtons
+        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
+                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
+                .attachTo(rightLowerButton)
+                .build();
+
+        // Listen menu open and close events to animate the button content view
+        rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+            @Override
+            public void onMenuOpened(FloatingActionMenu menu) {
+                // Rotate the icon of rightLowerButton 45 degrees clockwise
+                fabIconNew.setRotation(0);
+                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                animation.start();
+            }
+
+            @Override
+            public void onMenuClosed(FloatingActionMenu menu) {
+                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
+                fabIconNew.setRotation(45);
+                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                animation.start();
+            }
+        });
+
 
 //        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
 //        actionC.setTitle("Hide/Show Action above");

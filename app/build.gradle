@@ -45,4 +45,6 @@ dependencies {
         transitive = true;
     }
     compile files('libs/weibosdkcore_v3.0.1.jar')
+
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
 }

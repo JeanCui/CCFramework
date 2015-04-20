@@ -109,17 +109,17 @@
     </com.ccframework.floatingbutton.FloatingActionsMenu>
 </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dip"
-        android:layout_gravity="center_horizontal|bottom"
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="20dip"-->
+        <!--android:layout_gravity="center_horizontal|bottom"-->
 
-        android:padding="12dip"
+        <!--android:padding="12dip"-->
 
-        android:background="#55000000"
-        android:textColor="#ffffffff"
+        <!--android:background="#55000000"-->
+        <!--android:textColor="#ffffffff"-->
 
-        android:text="LOLOL" />
+        <!--android:text="LOLOL" />-->
 
 </FrameLayout>
