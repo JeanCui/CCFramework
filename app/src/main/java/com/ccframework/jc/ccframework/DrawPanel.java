@@ -258,6 +258,13 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 
             // Reinit TOUCH_EVENT
             touchEventInitialize();
+
+            // Show Bubble Control FAB
+            SpeechBubbleWidget currentBubble = bubblesList.get(mCurrentBubbleId);
+            ((MainActivity) getContext()).setBubbleControlFABPosition(currentBubble.getCX(), currentBubble.getCY());
+
+            ((MainActivity) getContext()).performClickOnBubbleFAB();
+
         }
         return true;
     }
@@ -440,8 +447,7 @@ public class DrawPanel extends SurfaceView implements Callback, OnTouchListener,
 
         SpeechBubbleWidget currentBubble = bubblesList.get(touchDownBubbleId);
         currentBubble.move((int)x, (int)y);
-//        currentBubble.setCX((int)x);
-//        currentBubble.setCY((int)y);
+
     }
 
     private GestureDetectorCompat mDetector;

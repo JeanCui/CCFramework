@@ -6,7 +6,6 @@ import com.ccframework.weibo.activities.WBAuthActivity;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,13 +18,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.ccframework.facebook.activities.FacebookActivity;
@@ -36,9 +32,6 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-
-import java.io.File;
-import java.io.IOException;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -85,7 +78,8 @@ public class MainActivity extends ActionBarActivity {
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
 
-    FloatingActionButton rightLowerButton ;
+    private FloatingActionButton bubbleControlFAB;
+    private FloatingActionMenu bubbleControlMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +187,9 @@ public class MainActivity extends ActionBarActivity {
 
                 int toolBarWidth = toolBar.getHeight();
                 FloatingActionButton.LayoutParams lp = new FloatingActionButton.LayoutParams(100, 100);
-                lp.leftMargin = startX + 200;
-                lp.topMargin = startY + 200 + toolBarWidth;
-                rightLowerButton.setLayoutParams(lp);
+//                lp.leftMargin = startX + 200;
+//                lp.topMargin = startY + 200 + toolBarWidth;
+                bubbleControlFAB.setLayoutParams(lp);
 
                 drawPanel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -210,9 +204,10 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-        rightLowerButton =  new FloatingActionButton.Builder(this).setPosition(8)
+        bubbleControlFAB =  new FloatingActionButton.Builder(this).setPosition(8)
                 .setContentView(fabIconNew)
                 .build();
+//        bubbleControlFAB.setVisibility(View.INVISIBLE);
 
 
         SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(this);
@@ -231,32 +226,35 @@ public class MainActivity extends ActionBarActivity {
 
         // Build the menu with default options: light theme, 90 degrees, 72dp radius.
         // Set 4 default SubActionButtons
-        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
+        bubbleControlMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
                 .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
                 .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
                 .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
-                .attachTo(rightLowerButton)
+                .setRadius(150)
+                .attachTo(bubbleControlFAB)
                 .build();
 
         // Listen menu open and close events to animate the button content view
-        rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+        bubbleControlMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
             @Override
             public void onMenuOpened(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees clockwise
-                fabIconNew.setRotation(0);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
+                // Rotate the icon of bubbleControlFAB 45 degrees clockwise
+
+//                fabIconNew.setRotation(0);
+//                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+//                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+//                animation.start();
             }
 
             @Override
             public void onMenuClosed(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
-                fabIconNew.setRotation(45);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
+                // Rotate the icon of bubbleControlFAB 45 degrees counter-clockwise
+
+//                fabIconNew.setRotation(45);
+//                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+//                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+//                animation.start();
             }
         });
 
@@ -277,6 +275,23 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+    public void setBubbleControlFABPosition(int x, int y){
+        int startX = drawPanel.getLeft();
+        int startY = drawPanel.getTop();
+
+        int toolBarHeight = toolBar.getHeight();
+        FloatingActionButton.LayoutParams lp = new FloatingActionButton.LayoutParams(100, 100);
+        lp.leftMargin = startX + x;
+        lp.topMargin = startY + y + toolBarHeight;
+        bubbleControlFAB.setLayoutParams(lp);
+
+    }
+
+    public void performClickOnBubbleFAB(){
+//        bubbleControlMenu.open(true);
+        bubbleControlFAB.performClick();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

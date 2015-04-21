@@ -94,6 +94,14 @@ public class SpeechBubbleWidget {
         mPaint.setColor(c);
 
     }
+    public int getCX()
+    {
+        return mCX;
+    }
+
+    public int getCY(){
+        return mCY;
+    }
 
 //    public void setTailPoint(Point p){
 //        mTailPoint = p;
