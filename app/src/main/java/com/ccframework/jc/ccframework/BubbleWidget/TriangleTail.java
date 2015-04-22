@@ -91,7 +91,6 @@ public class TriangleTail extends BubbleTailWidget {
 
         rayIntersectSphere.setSegmentVector(segmentVector1);
 
-
         mInterP1 = rayIntersectSphere.getClosetIntersectPoint();
 
         double cos_a2 = Math.cos(-rad);

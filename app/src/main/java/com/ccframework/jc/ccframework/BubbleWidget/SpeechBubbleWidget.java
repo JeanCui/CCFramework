@@ -103,9 +103,6 @@ public class SpeechBubbleWidget {
         return mCY;
     }
 
-//    public void setTailPoint(Point p){
-//        mTailPoint = p;
-//    }
 
     public void draw(Canvas c)
     {
