@@ -2,6 +2,4 @@
 
 2. support zoom in/out image using fingers touch
 
-3. add more bubble sytles, friday night, have fun...
-
-4. reading code complete 2
+3. add more bubble sytles
